@@ -1,4 +1,4 @@
-package com.example.primeira_api.config;
+package com.example.primeira_api.model;
 
 import com.nimbusds.jose.jwk.JWK;
 import com.nimbusds.jose.jwk.JWKSet;

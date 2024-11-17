@@ -1,4 +1,4 @@
-package com.example.primeira_api.config;
+package com.example.primeira_api.model;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
