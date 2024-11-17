@@ -1,7 +1,6 @@
 package com.example.primeira_api.model;
 
 import jakarta.persistence.*;
-
 import java.time.LocalDate;
 
 @Entity
@@ -11,24 +10,35 @@ public class Task {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @Column(nullable = false) // Garantir que o título não seja nulo
     private String title;
+
     private String description;
+
+    @Column(nullable = false) // Garantir que a data de criação não seja nula
     private LocalDate createdDate = LocalDate.now();
+
     private LocalDate dueDate;
 
     @Enumerated(EnumType.STRING)
-    private Status status = Status.TODO;
+    @Column(nullable = false) // Garantir que o status não seja nulo
+    private Status status = Status.A_FAZER; // Valor inicial atualizado
 
     @Enumerated(EnumType.STRING)
+    @Column(nullable = false) // Garantir que a prioridade não seja nula
     private Priority priority;
+
+    @Column(nullable = false) // Garantir que toda tarefa tenha um proprietário
+    private String owner; // Nome do usuário proprietário da tarefa
 
     public Task() {}
 
-    public Task(String title, String description, LocalDate dueDate, Priority priority) {
+    public Task(String title, String description, LocalDate dueDate, Priority priority, String owner) {
         this.title = title;
         this.description = description;
         this.dueDate = dueDate;
         this.priority = priority;
+        this.owner = owner;
     }
 
     // Getters e Setters
@@ -87,5 +97,13 @@ public class Task {
 
     public void setPriority(Priority priority) {
         this.priority = priority;
+    }
+
+    public String getOwner() {
+        return owner;
+    }
+
+    public void setOwner(String owner) {
+        this.owner = owner;
     }
 }

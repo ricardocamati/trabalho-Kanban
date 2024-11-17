@@ -1,5 +1,7 @@
 package com.example.primeira_api.model;
 
 public enum Priority {
-    LOW, MEDIUM, HIGH
+    BAIXA, // "LOW"
+    MEDIA, // "MEDIUM"
+    ALTA // "HIGH"
 }
