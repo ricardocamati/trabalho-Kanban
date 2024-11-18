@@ -1,17 +1,14 @@
 package com.example.primeira_api.controller;
 
-import com.example.primeira_api.service.SecurityService;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
-import org.springframework.security.oauth2.jwt.JwtClaimsSet;
-import org.springframework.security.oauth2.jwt.JwtEncoder;
-import org.springframework.security.oauth2.jwt.JwtEncoderParameters;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.Instant;
-import java.time.temporal.ChronoUnit;
+import java.util.Base64;
+import java.util.HashMap;
 import java.util.Map;
 
 @RestController
@@ -19,13 +16,9 @@ import java.util.Map;
 public class AuthController {
 
     private final AuthenticationManager authenticationManager;
-    private final JwtEncoder jwtEncoder;
-    private final SecurityService securityService;
 
-    public AuthController(AuthenticationManager authenticationManager, JwtEncoder jwtEncoder, SecurityService securityService) {
+    public AuthController(AuthenticationManager authenticationManager) {
         this.authenticationManager = authenticationManager;
-        this.jwtEncoder = jwtEncoder;
-        this.securityService = securityService;
     }
 
     @PostMapping("/login")
@@ -34,34 +27,22 @@ public class AuthController {
             String username = loginData.get("username");
             String password = loginData.get("password");
 
+            // Autenticar o usuário
             Authentication authentication = authenticationManager.authenticate(
                     new UsernamePasswordAuthenticationToken(username, password)
             );
 
-            Instant now = Instant.now();
-            JwtClaimsSet claims = JwtClaimsSet.builder()
-                    .issuer("http://localhost:8080")
-                    .issuedAt(now)
-                    .expiresAt(now.plus(1, ChronoUnit.HOURS))
-                    .subject(username)
-                    .claim("roles", authentication.getAuthorities().stream()
-                            .map(authority -> authority.getAuthority()))
-                    .build();
+            // Gerar o token JWT simples
+            String token = Base64.getEncoder().encodeToString(
+                    ("username=" + username + "&expiresAt=" + Instant.now().plusSeconds(3600)).getBytes()
+            );
 
-            String token = jwtEncoder.encode(JwtEncoderParameters.from(claims)).getTokenValue();
+            Map<String, String> response = new HashMap<>();
+            response.put("token", token);
+            return response;
 
-            return Map.of("token", token);
         } catch (AuthenticationException e) {
             throw new RuntimeException("Credenciais inválidas", e);
         }
-    }
-
-    @PostMapping("/register")
-    public String register(@RequestBody Map<String, String> userData) {
-        String username = userData.get("username");
-        String password = userData.get("password");
-
-        securityService.registerUser(username, password);
-        return "Usuário registrado com sucesso!";
     }
 }

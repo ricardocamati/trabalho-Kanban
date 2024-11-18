@@ -28,17 +28,13 @@ public class Task {
     @Column(nullable = false) // Garantir que a prioridade não seja nula
     private Priority priority;
 
-    @Column(nullable = false) // Garantir que toda tarefa tenha um proprietário
-    private String owner; // Nome do usuário proprietário da tarefa
-
     public Task() {}
 
-    public Task(String title, String description, LocalDate dueDate, Priority priority, String owner) {
+    public Task(String title, String description, LocalDate dueDate, Priority priority) {
         this.title = title;
         this.description = description;
         this.dueDate = dueDate;
         this.priority = priority;
-        this.owner = owner;
     }
 
     // Getters e Setters
@@ -97,13 +93,5 @@ public class Task {
 
     public void setPriority(Priority priority) {
         this.priority = priority;
-    }
-
-    public String getOwner() {
-        return owner;
-    }
-
-    public void setOwner(String owner) {
-        this.owner = owner;
     }
 }
